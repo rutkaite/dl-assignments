@@ -1,5 +1,7 @@
 # Shufflenet
-Repository contains first assignment for Deep Learning course 
+Repository contains first assignment for Deep Learning course
+
+Try it: https://15426.gradio.app
 
 ![Interface](assets/interface.PNG)
 
