@@ -1,4 +1,3 @@
-#Libraries
 import torch
 import os
 from openimages.download import download_dataset
@@ -8,8 +7,6 @@ import torch
 import gradio as gr
 import matplotlib.pyplot as plt
 import dataloader as dtl
-import inference as inf
-import localization as loc
 
 # Downloading images from openimages.com
 data_dir = "data/train"
@@ -112,7 +109,9 @@ model=torch.load('shufflenetmodel.pth')
 model.eval()
 
 # Testing the model with gradio interface
+import inference as inf
 gr.Interface(inf.inference, inf.inputs, inf.outputs, title=inf.title, description=inf.description, analytics_enabled=False).launch(share=True)
 
 # Testing localization
+import localization as loc
 #print("Predicted localization coordinates:" + loc.bounding_box(imagetest))
