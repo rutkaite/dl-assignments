@@ -6,8 +6,6 @@ from torchvision import datasets, transforms, models
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model=torch.load('shufflenetmodel.pth')
 model.eval()
-#----------
-#
 
 import dataloader as dtl
 data_dir = "data/train"
@@ -44,4 +42,3 @@ inputs = gr.inputs.Image(type='pil')
 outputs = gr.outputs.Label(type="confidences",num_top_classes=3)
 title = "SHUFFLENET"
 description = "Please upload your headphones, coffee or reiven image."
-#article = "<p style='text-align: center'><a href='https://arxiv.org/abs/1807.11164'>ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design</a> | <a href='https://github.com/pytorch/vision/blob/master/torchvision/models/shufflenetv2.py'>Github Repo</a></p>"
