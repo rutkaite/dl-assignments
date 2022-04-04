@@ -1,10 +1,17 @@
 #Libraries
 import torch
-
-#downloading images from openimages.com
 import os
 from openimages.download import download_dataset
+from torch import nn
+from torch import optim
+import torch
+import gradio as gr
+import matplotlib.pyplot as plt
+import dataloader as dtl
+import inference as inf
+import localization as loc
 
+# Downloading images from openimages.com
 data_dir = "data/train"
 classes = ["Headphones", "Coffee", "Raven"]
 
@@ -19,15 +26,10 @@ device = torch.device("cuda" if torch.cuda.is_available()
 model = torch.hub.load('pytorch/vision:v0.9.0', 'shufflenet_v2_x1_0', pretrained=True)
 
 # Load images
-import dataloader as dtl
-#dividing our data into train(80%) and test(20%) data
+# Dividing our data into train(80%) and test(20%) data
 trainloader, testloader = dtl.load_split_train_test(data_dir, .2)
 
 # TRAINING PART
-# Importing the modules needed for training
-import torch
-from torch import nn
-from torch import optim
 
 # Freezing the part of the model as no changes happen to its parameters
 for param in model.parameters():
@@ -41,12 +43,12 @@ model.fc = nn.Sequential(nn.Linear(1024, 512),
                          nn.LogSoftmax(dim=1))
 
 criterion = nn.NLLLoss()
-#optimizer is the one which actually updates these values
+# Optimizer is the one which actually updates these values
 optimizer = optim.Adam(model.fc.parameters(), lr=0.003)
 model.to(device)
 
-#training the model
-# number of epochs to train the model
+# Training the model
+# Number of epochs to train the model
 epochs = 5
 steps = 0
 running_loss = 0
@@ -96,18 +98,13 @@ if not os.path.exists("shufflenetmodel.pth"):
                       f"Test accuracy: {accuracy / len(testloader):.3f}")
                 running_loss = 0
                 model.train()
-    #saving our trained model
+    # Saving our trained model
     torch.save(model, 'shufflenetmodel.pth')
-
-# Visualisation of training and test losses
-# plt.plot(train_losses, label='Training loss')
-# plt.plot(test_losses, label='Validation loss')
-# plt.legend(frameon=False)
-# plt.show()
-
-import torch
-import gradio as gr
-import matplotlib.pyplot as plt
+    # Visualisation of training and test losses
+    plt.plot(train_losses, label='Training loss')
+    plt.plot(test_losses, label='Validation loss')
+    plt.legend(frameon=False)
+    plt.show()
 
 # From now on we will use our trained model
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -115,18 +112,7 @@ model=torch.load('shufflenetmodel.pth')
 model.eval()
 
 # Testing the model with gradio interface
-import inference as inf
-gr.Interface(inf.inference, inf.inputs, inf.outputs, title=inf.title, description=inf.description, analytics_enabled=False).launch()
-
-# Testing without interface
-# from PIL import Image
-# imagetest = Image.open('data/train/coffee/images/0b4cc0940f307730.jpg')
-# print("Classification results")
-# print(inf.inference(imagetest))
-# plt.imshow(imagetest)
-# plt.show()
+gr.Interface(inf.inference, inf.inputs, inf.outputs, title=inf.title, description=inf.description, analytics_enabled=False).launch(share=True)
 
 # Testing localization
-# import localization as loc
-# print("Predicted localization coordinates:")
-# print(loc.bounding_box(imagetest))
+#print("Predicted localization coordinates:" + loc.bounding_box(imagetest))
