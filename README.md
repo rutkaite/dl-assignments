@@ -32,7 +32,7 @@ classes.
  New model later saved to `shufflenetmodel.pth`
  <br>
 ### Statistics
-![Graph](Figure_1.png)
+![Graph](assets/Figure_1.png)
 
 Training output:
  ```
